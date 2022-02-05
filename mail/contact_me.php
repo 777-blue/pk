@@ -1,26 +1,54 @@
 <?php
-// Check for empty fields
-if(empty($_POST['name'])      ||
-   empty($_POST['email'])     ||
-   empty($_POST['phone'])     ||
-   empty($_POST['message'])   ||
-   !filter_var($_POST['email'],FILTER_VALIDATE_EMAIL))
-   {
-   echo "No arguments Provided!";
-   return false;
-   }
-   
-$name = strip_tags(htmlspecialchars($_POST['name']));
-$email_address = strip_tags(htmlspecialchars($_POST['email']));
-$phone = strip_tags(htmlspecialchars($_POST['phone']));
-$message = strip_tags(htmlspecialchars($_POST['message']));
-   
-// Create the email and send the message
-$to = 'info@kourideslaw.com'; // Add your email address inbetween the '' replacing yourname@yourdomain.com - This is where the form will send a message to.
-$email_subject = "Website Contact Form:  $name";
-$email_body = "You have received a new message from your website contact form.\n\n"."Here are the details:\n\nName: $name\n\nEmail: $email_address\n\nPhone: $phone\n\nMessage:\n$message";
-$headers = "From: info@kourideslaw.com\n"; // This is the email address the generated message will be from. We recommend using something like info@yourdomain.com.
-$headers .= "Reply-To: $email_address";   
-mail($to,$email_subject,$email_body,$headers);
-return true;         
+
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    $myPersonalEmail = "testtest01@mail.com";
+    
+    $externalMailHost = "smtp.mail.com";
+    $externalMailAddress = "testtest01@mail.com";
+    $externalMailSMTPAuth = true;
+    $externalMailUsername = "testtest01@mail.com";
+    $externalMailPassword = "ForExample888";
+    $externalMailSMTPSecure = "tls";
+    $externalMailPort = 587;
+    
+testtest01@mail.com
+    require './src/Exception.php';
+    require './src/PHPMailer.php';
+    require './src/SMTP.php';
+
+    if(isset($_POST['submit'])) {
+
+        $mail = new PHPMailer(true);
+
+        $mail->SMTPDebug = 0;
+        $mail->isSMTP();
+
+        $mail->Host = $externalMailHost;
+        $mail->SMTPAuth = $externalMailSMTPAuth;
+        $mail->Username = $externalMailUsername;
+        $mail->Password = $externalMailPassword;
+        $mail->SMTPSecure = $externalMailSMTPSecure;
+        $mail->Port = $externalMailPort;
+        
+        $mail->setFrom($externalMailAddress, 'Mailer');
+        $mail->addAddress($myPersonalEmail);
+        $mail->addReplyTo($_POST['email'], $_POST['name']);
+
+        $mail->isHTML(true);    
+        $mail->Subject = $_POST['subject'];
+        $mail->Body = $_POST['message'];
+
+        try {
+            $mail->send();
+            echo 'Your message was sent successfully!';
+        } catch (Exception $e) {
+            echo "Your message could not be sent! PHPMailer Error: {$mail->ErrorInfo}";
+        }
+        
+    } else {
+        echo "There is a problem with the contact.html document!";
+    }
+    
 ?>
