@@ -14,9 +14,9 @@
     $externalMailPort = 587;
     
 testtest01@mail.com
-    require './src/Exception.php';
-    require './src/PHPMailer.php';
-    require './src/SMTP.php';
+    require '../src/Exception.php';
+    require '../src/PHPMailer.php';
+    require '../src/SMTP.php';
 
     if(isset($_POST['submit'])) {
 
